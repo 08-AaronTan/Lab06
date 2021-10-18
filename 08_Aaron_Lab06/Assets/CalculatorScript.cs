@@ -5,40 +5,69 @@ using UnityEngine.UI;
 
 public class CalculatorScript : MonoBehaviour
 {
-    Toggle toggleUSDollar;
-    Toggle toggleJapaneseYen;
+    public string storeText;
+    public float storeNumber;
+    public GameObject inputText;
 
-    public Text inputConvertAmount;
-    public Text inputAmount;
+    public Toggle toggleUSDollar;
+    public Toggle toggleJapaneseYen;
 
-    private double SGDUSD_rate;
-    private double SGDJPY_rate;
+    public InputField Amount;
+    public InputField Value;
+    public InputField inputCovertedAmount;
+
+    public Text debugText;
+
+    private float SGDUSD_rate = 0.74f;
+    private float SGDJPY_rate = 82.79f;
 
     // Start is called before the first frame update
     void Start()
-    {
-        toggleUSDollar.isOn = false;
-        toggleJapaneseYen.isOn = false;        SGDUSD_rate = 0.74;
-        SGDJPY_rate = 82.79;
-    }
-
-    // Update is called once per frame
-    void Update()
     {
         
     }
 
     public void ConvertBtn()
     {
-        if(toggleUSDollar.isOn == true && toggleJapaneseYen.isOn == false)
+        try
         {
-            float amount = float.Parse(inputAmount.text);
-            inputConvertAmount.text = "$" + (amount * SGDUSD_rate);
+            storeText = inputText.GetComponent<Text>().text;
+            storeNumber = float.Parse(storeText);
         }
-        if (toggleJapaneseYen.isOn == true && toggleUSDollar.isOn == true)
+
+        catch
         {
-            float amount = float.Parse(inputAmount.text);
-            inputConvertAmount.text = "$" + (amount * SGDJPY_rate);
+            debugText.text = "Please enter a vaild amount";
         }
+
+        if(toggleUSDollar.isOn)
+        {
+            storeNumber = storeNumber * SGDUSD_rate;
+            toggleJapaneseYen.isOn = false;
+        }
+
+        else if (toggleJapaneseYen.isOn)
+        {
+            storeNumber = storeNumber * SGDJPY_rate;
+            toggleUSDollar.isOn = false;
+        }
+
+        else
+        {
+            debugText.text = "Please only select 1 currency.";
+        }
+
+        inputCovertedAmount.text = "$" + storeNumber.ToString();
+
+    }
+    public void Clearbtn()
+    {
+        storeNumber = 0;
+        Amount.text = "";
+        Value.text = "";
+
+        toggleUSDollar.isOn = false;
+        toggleJapaneseYen.isOn = false;
+
     }
 }
